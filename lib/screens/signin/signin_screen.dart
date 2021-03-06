@@ -1,10 +1,11 @@
+import 'package:desafio_flutter/screens/signin/components/body.dart';
 import 'package:flutter/material.dart';
 
-class SigninScreens extends StatelessWidget {
+class SigninScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('Signin'),
+    return Scaffold(
+      body: Body(),
     );
   }
 }

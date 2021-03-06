@@ -1,7 +1,13 @@
-import 'package:desafio_flutter/screens/welcome/welcome_screen.dart';
+import 'package:desafio_flutter/auth/authentication_service.dart';
+import 'package:desafio_flutter/auth/authentication_wrapper.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -9,13 +15,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: WelcomeScreen(),
-    );
+    return MultiProvider(
+        providers: [
+          Provider<AuthenticationService>(
+            create: (_) => AuthenticationService(FirebaseAuth.instance),
+          ),
+          StreamProvider(
+            initialData: null,
+            create: (context) =>
+                context.read<AuthenticationService>().authStateChanges,
+          )
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: AuthenticationWrapper(),
+        ));
   }
 }
