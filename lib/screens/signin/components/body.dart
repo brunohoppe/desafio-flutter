@@ -40,7 +40,7 @@ class _BodyState extends State<Body> {
           InputField(
             controller: emailController,
             prefixIcon: Icon(Icons.person),
-            hintText: 'Email',
+            hintText: 'E-mail',
             onChanged: (value) {},
           ),
           InputField(
@@ -52,7 +52,7 @@ class _BodyState extends State<Body> {
                   : Icon(Icons.visibility_off),
               onPressed: showPassword,
             ),
-            hintText: 'Password',
+            hintText: 'Senha',
             obscureText: !showingPassword,
             onChanged: (value) {},
           ),
@@ -65,7 +65,7 @@ class _BodyState extends State<Body> {
                       password: passwordController.text.trim(),
                     );
               },
-              child: Text('Login'),
+              child: Text('Entrar'),
             ),
           ),
           Padding(

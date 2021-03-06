@@ -1,17 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../auth/authentication_service.dart';
 import '../../../components/input_field.dart';
 import '../../signin/signin_screen.dart';
-
-Future<String> get _localPath async {
-  // final directory = await getApplicationDocumentsDirectory();
-
-  // return directory.path;
-}
 
 class Body extends StatefulWidget {
   const Body({
@@ -26,7 +21,7 @@ class _BodyState extends State<Body> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   File _image;
-  // final picker = ImagePicker();
+  final picker = ImagePicker();
   void showPassword() {
     setState(() {
       showingPassword = !showingPassword;
@@ -34,15 +29,15 @@ class _BodyState extends State<Body> {
   }
 
   Future<void> getImage() async {
-    // final pickedFile = await picker.getImage(source: ImageSource.gallery);
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
 
-    // setState(() {
-    //   if (pickedFile != null) {
-    //     _image = File(pickedFile.path);
-    //   } else {
-    //     print('No image selected.');
-    //   }
-    // });
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('Nenhuma imagem selecionada');
+      }
+    });
   }
 
   @override
@@ -51,28 +46,39 @@ class _BodyState extends State<Body> {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        // crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           SizedBox(height: size.height * 0.3),
           Text(
-            'Sign Up',
+            'Cadastre-se',
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
           ),
           SizedBox(height: size.height * 0.05),
-          GestureDetector(
-            onTap: getImage,
-            child: Container(
-              width: 100.0,
-              height: 100.0,
-              decoration: BoxDecoration(
-                color: Colors.black12,
-                borderRadius: BorderRadius.circular(50),
+          Center(
+            child: GestureDetector(
+              // TODO: Save user selfie in database
+              onTap: getImage,
+              child: Container(
+                width: 100.0,
+                height: 100.0,
+                decoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: _image == null
+                    ? Icon(Icons.add_a_photo)
+                    : ClipRRect(
+                        child: Image.file(
+                          _image,
+                          fit: BoxFit.fill,
+                        ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
               ),
-              child: Icon(Icons.add_a_photo),
             ),
           ),
           SizedBox(height: size.height * 0.05),
+          // TODO Confirm password field
           InputField(
             controller: emailController,
             prefixIcon: Icon(Icons.person),
@@ -88,7 +94,7 @@ class _BodyState extends State<Body> {
                   : Icon(Icons.visibility_off),
               onPressed: showPassword,
             ),
-            hintText: 'Password',
+            hintText: 'Senha',
             obscureText: !showingPassword,
             onChanged: (value) {},
           ),
@@ -101,7 +107,7 @@ class _BodyState extends State<Body> {
                       password: passwordController.text.trim(),
                     );
               },
-              child: Text('Sign Up'),
+              child: Text('Salvar'),
             ),
           ),
           Padding(
@@ -124,7 +130,7 @@ class _BodyState extends State<Body> {
                       );
                     },
                     child: Text(
-                      'Login',
+                      'Entrar!',
                       style: TextStyle(
                         color: Colors.blue,
                       ),
