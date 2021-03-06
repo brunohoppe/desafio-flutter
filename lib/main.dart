@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
+  print('hey');
   runApp(MyApp());
 }
 
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
             create: (_) => AuthenticationService(FirebaseAuth.instance),
           ),
           StreamProvider(
+            initialData: null,
             create: (context) =>
                 context.read<AuthenticationService>().authStateChanges,
           )
