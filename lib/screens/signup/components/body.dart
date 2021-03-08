@@ -82,7 +82,7 @@ class _BodyState extends State<Body> {
           InputField(
             controller: emailController,
             prefixIcon: Icon(Icons.person),
-            hintText: 'E-mail',
+            hintText: 'Email',
             onChanged: (value) {},
           ),
           InputField(
@@ -101,11 +101,17 @@ class _BodyState extends State<Body> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: ElevatedButton(
-              onPressed: () {
-                context.read<AuthenticationService>().signUp(
+              onPressed: () async {
+                var result = await context.read<AuthenticationService>().signUp(
                       email: emailController.text.trim(),
                       password: passwordController.text.trim(),
                     );
+                if (result != '') {
+                  final snackBar = SnackBar(content: Text(result));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                } else {
+                  Navigator.pop(context);
+                }
               },
               child: Text('Salvar'),
             ),
@@ -115,24 +121,17 @@ class _BodyState extends State<Body> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    'Já possui uma conta? ',
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return SigninScreen();
-                          },
+                  Container(
+                    height: 50.0,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Já possui uma conta? Entrar!',
+                        style: TextStyle(
+                          color: Colors.blue,
                         ),
-                      );
-                    },
-                    child: Text(
-                      'Entrar!',
-                      style: TextStyle(
-                        color: Colors.blue,
                       ),
                     ),
                   )

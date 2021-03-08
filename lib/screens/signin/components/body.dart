@@ -28,7 +28,6 @@ class _BodyState extends State<Body> {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           SizedBox(height: size.height * 0.3),
           Text(
@@ -40,7 +39,7 @@ class _BodyState extends State<Body> {
           InputField(
             controller: emailController,
             prefixIcon: Icon(Icons.person),
-            hintText: 'E-mail',
+            hintText: 'Email',
             onChanged: (value) {},
           ),
           InputField(
@@ -59,11 +58,15 @@ class _BodyState extends State<Body> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: ElevatedButton(
-              onPressed: () {
-                context.read<AuthenticationService>().signIn(
+              onPressed: () async {
+                var result = await context.read<AuthenticationService>().signIn(
                       email: emailController.text.trim(),
                       password: passwordController.text.trim(),
                     );
+                if (result != '') {
+                  final snackBar = SnackBar(content: Text(result));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
               },
               child: Text('Entrar'),
             ),
@@ -73,24 +76,24 @@ class _BodyState extends State<Body> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    'Ainda não possiu um conta? ',
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return SignupScreen();
-                          },
+                  Container(
+                    height: 50.0,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return SignupScreen();
+                            },
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Ainda não possiu um conta? Cadastre-se',
+                        style: TextStyle(
+                          color: Colors.blue,
                         ),
-                      );
-                    },
-                    child: Text(
-                      'Cadastre-se',
-                      style: TextStyle(
-                        color: Colors.blue,
                       ),
                     ),
                   )

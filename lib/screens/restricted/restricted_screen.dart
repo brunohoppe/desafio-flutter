@@ -1,7 +1,7 @@
-import 'package:desafio_flutter/screens/home/components/body.dart';
+import 'package:desafio_flutter/screens/restricted/components/body.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class RestrictedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

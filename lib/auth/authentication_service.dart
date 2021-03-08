@@ -13,9 +13,10 @@ class AuthenticationService {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-      return 'Signed In';
+      return '';
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      print(e.message);
+      return 'Email ou senha inválidos';
     }
   }
 
@@ -23,9 +24,10 @@ class AuthenticationService {
     try {
       await _firebaseAuth.createUserWithEmailAndPassword(
           email: email, password: password);
-      return 'Signed Up';
+      return '';
     } on FirebaseAuthException catch (e) {
-      return e.message;
+      print(e.message);
+      return 'Erro ao cadastrar usuário';
     }
   }
 }
