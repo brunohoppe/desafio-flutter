@@ -1,3 +1,4 @@
+import 'package:desafio_flutter/auth/authentication_service.dart';
 import 'package:desafio_flutter/screens/welcome/components/body.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,22 +28,22 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               child: ElevatedButton(
                 child: Text('Validar Email'),
                 onPressed: () async {
-                  Navigator.pop(context);
-                  // if (firebaseUser != null) {
-                  //   try {
-                  //     await firebaseUser.sendEmailVerification();
-                  //     final snackBar =
-                  //         SnackBar(content: Text('Validado com sucesso'));
-                  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  //     setState(() {
-
-                  //     });
-                  //   } catch (e) {
-                  //     final snackBar =
-                  //         SnackBar(content: Text('Erro ao validar email'));
-                  //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  //   }
-                  // }
+                  if (firebaseUser != null) {
+                    Navigator.pop(context);
+                    try {
+                      await firebaseUser.sendEmailVerification();
+                      final snackBar =
+                          SnackBar(content: Text('Validado com sucesso'));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      setState(() {
+                        firebaseUser.reload();
+                      });
+                    } catch (e) {
+                      final snackBar =
+                          SnackBar(content: Text('Erro ao validar email'));
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  }
                 },
               ),
             ),
@@ -60,18 +61,35 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       child: Scaffold(
         drawer: Drawer(
           child: ListView(
-            // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: <Widget>[
-              Container(
-                height: 125.0,
-                child: DrawerHeader(
-                  child: null,
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                  ),
+              DrawerHeader(
+                child: Column(
+                  children: <Widget>[
+                    CircleAvatar(
+                      child: Icon(
+                        Icons.person,
+                        size: 40.0,
+                      ),
+                    ),
+                    Text(
+                      '${firebaseUser.email}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    Text(
+                      '${checkEmailVerify(firebaseUser)}',
+                      style: TextStyle(
+                        color: Colors.greenAccent,
+                        fontSize: 10.0,
+                      ),
+                    )
+                  ],
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
                 ),
               ),
               ListTile(
@@ -95,19 +113,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ),
         ),
         appBar: AppBar(
-          title: Wrap(
-            spacing: 10.0,
-            children: <Widget>[
-              Text('${firebaseUser.email}'),
-              Text(
-                '${checkEmailVerify(firebaseUser)}',
-                style: TextStyle(
-                  color: Colors.greenAccent,
-                  fontSize: 10.0,
-                ),
-              )
-            ],
-          ),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.logout),
+              tooltip: 'Logout',
+              onPressed: () {
+                context.read<AuthenticationService>().signOut();
+              },
+            ),
+          ],
           bottom: TabBar(
             tabs: [
               Tab(
